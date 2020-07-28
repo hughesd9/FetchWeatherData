@@ -2,6 +2,9 @@
 import json
 import requests
 import sys
+
+APPID = 'PLACE_API_KEY_HERE'
+
 #TODO
 #Get location from the command line
 if len(sys.argv) < 2:
