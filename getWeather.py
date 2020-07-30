@@ -1,11 +1,10 @@
-#getWeather.py prints the weather for a given location
+#getWeather.py prints the current weather for a given location
 import json
 import requests
 import sys
 
-APPID = 'Your_API_key_here'
+APPID = 'Your_APPID_Here'
 
-#TODO
 #Get location from the command line
 #OpenWeatherMap requires a city name and two-letter country code.
 #List of country codes can be found here: https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2
@@ -18,12 +17,33 @@ location = ','.join(sys.argv[1:])
 print("The location is: " + location)
 
 #Get weather data from openweathermap.org's API in JSON form
-base_url = "http://api.openweathermap.org/data/2.5/weather?"
-complete_url = base_url + "appid=" + APPID + "&q=" + location
-print('Searching: ' + complete_url)
-response = requests.get(complete_url)
+url = "http://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s" % (location, APPID)
+print('Searching: ' + url)
+response = requests.get(url)
 response.raise_for_status()
 
-print(response.text)
+#print(response.text)
 
-#Show forecast
+#Show current weather
+#Load JSON data into vairable
+
+weatherData = response.json()
+#print(weatherData)
+
+if weatherData["cod"] != "404":
+    main_variable = weatherData["main"]
+
+    current_temp = main_variable["temp"]
+    current_humidity = main_variable["humidity"]
+    weather_variable = weatherData["weather"]
+    weather_description = weather_variable[0]["description"]
+
+    print()
+    print("The weather in " + location + " is: ")
+    print()
+    print("Temperature: %.2f" % (current_temp - 273.15) + "°C"
+          "\nHumidity: " + str(current_humidity) + "%"
+          "\nDescription: " + str(weather_description))
+
+else:
+    print("City not found")
